@@ -1,0 +1,38 @@
+// import { Geist, Geist_Mono } from "next/font/google";
+import { Toaster } from "sonner";
+import "./globals.css";
+import AppProviders from "./providers";
+import { Inter, Roboto } from "next/font/google";
+import { ReactNode } from "react";
+import { ClerkProvider } from "@clerk/nextjs";
+
+const roboto = Roboto({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+});
+export const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+});
+
+export const metadata = {
+  title: "NutriMate AI",
+  description: "Smart nutrition, pantry, and meal planning assistant",
+};
+
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return (
+    <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY} afterSignOutUrl="/">
+      <html lang="en">
+        <body className={`${roboto.className} antialiased`}>
+          <AppProviders>
+            <div className="app-scroll">
+              {children}
+              <Toaster position="top-right" richColors />
+            </div>
+          </AppProviders>
+        </body>
+      </html>
+    </ClerkProvider>
+  );
+}

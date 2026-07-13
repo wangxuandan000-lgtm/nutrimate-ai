@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f4f7f1;
+  --foreground: #17251d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #e9efe7;
+  color: var(--foreground);
+  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+.app-scroll {
+  min-height: 100vh;
+}
+
+button,
+a,
+[role="button"],
+input[type="submit"],
+input[type="button"],
+.clickable {
+  cursor: pointer;
+  transition: all 180ms ease;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+button:hover,
+a:hover,
+.clickable:hover {
+  filter: brightness(0.98);
+}
+
+.scrollbar-hide {
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

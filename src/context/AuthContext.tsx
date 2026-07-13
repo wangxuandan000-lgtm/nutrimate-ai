@@ -1,7 +1,6 @@
 "use client";
 
 import { useUser, useAuth } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
 import {
   createContext,
   useCallback,
@@ -11,7 +10,6 @@ import {
   useState,
   ReactNode,
 } from "react";
-import { toast } from "sonner";
 import { setStoredToken } from "src/lib/api";
 
 type User = { id: string; username: string } | null;
@@ -30,7 +28,6 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const router = useRouter();
   // const [isLoading, setIsLoading] = useState(true);
   // const isAuthenticated = Boolean(user);
   const { user } = useUser();
@@ -43,9 +40,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.log(token, "my token");
         if (token) {
           setStoredToken(token);
-        } else {
-          toast.warning("User not authorised")
-          router.replace('/login')
         }
       } catch (_) {}
     };

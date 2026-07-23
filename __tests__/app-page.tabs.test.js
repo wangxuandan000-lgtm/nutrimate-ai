@@ -36,7 +36,7 @@ describe('NutriMate AI desktop web app', () => {
 
 		expect(await screen.findByText('Hi，今天想吃得更健康一点吗？')).toBeInTheDocument();
 		expect(screen.getByText('NutriMate AI')).toBeInTheDocument();
-		expect(screen.getAllByRole('button', { name: 'AI Plan' })[0]).toBeInTheDocument();
+		expect(screen.getAllByRole('button', { name: 'AI 餐单' })[0]).toBeInTheDocument();
 		expect(screen.getByText('今日推荐餐单')).toBeInTheDocument();
 	});
 
@@ -46,15 +46,15 @@ describe('NutriMate AI desktop web app', () => {
 
 		renderApp();
 
-		await clickNav(user, 'AI Plan');
-		expect(await screen.findByRole('heading', { name: 'AI Plan' })).toBeInTheDocument();
+		await clickNav(user, 'AI 餐单');
+		expect(await screen.findByRole('heading', { name: 'AI 智能餐单' })).toBeInTheDocument();
 
-		await user.click(screen.getByRole('button', { name: 'Generate AI Meal Plan' }));
+		await user.click(screen.getByRole('button', { name: '生成 AI 健康餐单' }));
 
 		expect(await screen.findByText('AI 生成结果')).toBeInTheDocument();
 		expect(screen.getByText('营养评分')).toBeInTheDocument();
 		expect(await screen.findByText('午餐：三文鱼菠菜糙米碗')).toBeInTheDocument();
-		expect(screen.getByRole('button', { name: 'Add to Shopping List' })).toBeInTheDocument();
+		expect(screen.getByRole('button', { name: '加入购物清单' })).toBeInTheDocument();
 	});
 
 	test('Recipes: shows mock recipe grid and opens recipe detail', async () => {
@@ -63,8 +63,8 @@ describe('NutriMate AI desktop web app', () => {
 
 		renderApp();
 
-		await clickNav(user, 'Recipes');
-		expect(await screen.findByRole('heading', { name: 'Recipes' })).toBeInTheDocument();
+		await clickNav(user, '健康菜谱');
+		expect(await screen.findByRole('heading', { name: '健康菜谱' })).toBeInTheDocument();
 		expect(screen.getByPlaceholderText('搜索菜名、标签或食材')).toBeInTheDocument();
 
 		await user.click(screen.getByRole('button', { name: /三文鱼菠菜糙米碗/ }));
@@ -73,8 +73,8 @@ describe('NutriMate AI desktop web app', () => {
 		expect(screen.getByText('食材清单')).toBeInTheDocument();
 
 		await user.click(screen.getByRole('button', { name: '加入购物清单' }));
-		expect(await screen.findByRole('heading', { name: 'Shopping' })).toBeInTheDocument();
-		expect(screen.getByText('自动生成的本周购物清单，和 AI Plan 保持同步。')).toBeInTheDocument();
+		expect(await screen.findByRole('heading', { name: '购物清单' })).toBeInTheDocument();
+		expect(screen.getByText('自动生成本周购物清单，并与 AI 智能餐单保持同步。')).toBeInTheDocument();
 	});
 
 	test('Recipes: preserves original recipe management add flow', async () => {
@@ -85,24 +85,24 @@ describe('NutriMate AI desktop web app', () => {
 
 		renderApp();
 
-		await clickNav(user, 'Recipes');
-		await screen.findByText('暂无自建菜谱。可以点击 Add Recipe 添加你的第一道健康菜。');
+		await clickNav(user, '健康菜谱');
+		await screen.findByText('暂无自建菜谱。可以点击“添加菜谱”创建你的第一道健康菜。');
 
-		await user.click(screen.getByRole('button', { name: 'Add Recipe' }));
-		expect(await screen.findByRole('heading', { name: 'Add Recipe' })).toBeInTheDocument();
+		await user.click(screen.getByRole('button', { name: '添加菜谱' }));
+		expect(await screen.findByRole('heading', { name: '添加菜谱' })).toBeInTheDocument();
 
-		await user.type(screen.getByLabelText('Title'), 'Tomato Soup');
-		await user.type(screen.getByPlaceholderText('Add ingredient and press Enter'), 'tomato{enter}');
-		await user.type(screen.getByLabelText('Steps'), 'Blend{enter}Heat');
+		await user.type(screen.getByLabelText('菜谱名称'), '番茄汤');
+		await user.type(screen.getByPlaceholderText('输入食材后按回车键添加'), '番茄{enter}');
+		await user.type(screen.getByLabelText('制作步骤'), '搅拌{enter}加热');
 
-		await user.click(screen.getByRole('button', { name: 'Add' }));
+		await user.click(screen.getByRole('button', { name: '添加' }));
 
 		await waitFor(() => expect(createSpy).toHaveBeenCalledTimes(1));
 		expect(createSpy).toHaveBeenCalledWith({
-			title: 'Tomato Soup',
-			description: 'Blend\nHeat'.slice(0, 120),
-			ingredients: [{ name: 'tomato' }],
-			steps: ['Blend', 'Heat'],
+			title: '番茄汤',
+			description: '搅拌\n加热'.slice(0, 120),
+			ingredients: [{ name: '番茄' }],
+			steps: ['搅拌', '加热'],
 		}, 'test-token');
 	});
 
@@ -112,9 +112,9 @@ describe('NutriMate AI desktop web app', () => {
 
 		renderApp();
 
-		await clickNav(user, 'Pantry');
+		await clickNav(user, '我的食材');
 
-		expect(await screen.findByRole('heading', { name: 'Pantry' })).toBeInTheDocument();
+		expect(await screen.findByRole('heading', { name: '我的食材' })).toBeInTheDocument();
 		expect(screen.getByText('总食材数量')).toBeInTheDocument();
 		expect(screen.getAllByText('即将过期')[0]).toBeInTheDocument();
 		expect(screen.getAllByText('库存不足')[0]).toBeInTheDocument();
@@ -127,7 +127,7 @@ describe('NutriMate AI desktop web app', () => {
 
 		renderApp();
 
-		await clickNav(user, 'Shopping');
+		await clickNav(user, '购物清单');
 
 		const blueberryRow = await screen.findByText('蓝莓');
 		const checkbox = within(blueberryRow.closest('label')).getByRole('checkbox');
@@ -143,9 +143,9 @@ describe('NutriMate AI desktop web app', () => {
 
 		renderApp();
 
-		await clickNav(user, 'Profile');
+		await clickNav(user, '个人中心');
 
-		expect(await screen.findByText('Mia')).toBeInTheDocument();
+		expect(await screen.findByText('小悠')).toBeInTheDocument();
 		expect(screen.getByText('AI 健康评分')).toBeInTheDocument();
 		expect(screen.getByText('本周蛋白质摄入较稳定，适合继续保持。')).toBeInTheDocument();
 	});

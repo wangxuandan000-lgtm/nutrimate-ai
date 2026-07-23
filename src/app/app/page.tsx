@@ -25,6 +25,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
+import Image from "next/image";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import FormModal from "../../components/FormModal";
@@ -54,12 +55,12 @@ type ViewKey =
 type MockRecipe = (typeof mockRecipes)[number];
 
 const navigation = [
-  { key: "home", label: "Home", icon: Home },
-  { key: "aiPlan", label: "AI Plan", icon: Sparkles },
-  { key: "recipes", label: "Recipes", icon: BookOpen },
-  { key: "pantry", label: "Pantry", icon: Package },
-  { key: "shopping", label: "Shopping", icon: ShoppingCart },
-  { key: "profile", label: "Profile", icon: User },
+  { key: "home", label: "首页", icon: Home },
+  { key: "aiPlan", label: "AI 餐单", icon: Sparkles },
+  { key: "recipes", label: "健康菜谱", icon: BookOpen },
+  { key: "pantry", label: "我的食材", icon: Package },
+  { key: "shopping", label: "购物清单", icon: ShoppingCart },
+  { key: "profile", label: "个人中心", icon: User },
 ] as const;
 
 const recipeFilters = ["全部", "早餐", "午餐", "晚餐", "高蛋白", "低卡", "快手菜"];
@@ -71,10 +72,10 @@ const quickActions: {
   Icon: LucideIcon;
   target: ViewKey;
 }[] = [
-  { title: "AI Meal Plan", desc: "生成今日和一周餐单", Icon: Sparkles, target: "aiPlan" },
-  { title: "Fridge to Recipe", desc: "用现有食材组合菜谱", Icon: Package, target: "pantry" },
-  { title: "Smart Shopping List", desc: "自动补齐缺失食材", Icon: ShoppingCart, target: "shopping" },
-  { title: "Nutrition Report", desc: "查看本周营养趋势", Icon: BarChart3, target: "profile" },
+  { title: "AI 智能餐单", desc: "生成今日和一周餐单", Icon: Sparkles, target: "aiPlan" },
+  { title: "冰箱食材变菜谱", desc: "用现有食材组合菜谱", Icon: Package, target: "pantry" },
+  { title: "智能购物清单", desc: "自动补齐缺失食材", Icon: ShoppingCart, target: "shopping" },
+  { title: "营养健康报告", desc: "查看本周营养趋势", Icon: BarChart3, target: "profile" },
 ];
 
 export default function AppPage() {
@@ -166,7 +167,7 @@ export default function AppPage() {
         "鸡蛋牛油果吐司",
       ]);
       setPlanLoading(false);
-      toast.success("AI meal plan 已生成。");
+      toast.success("AI 健康餐单已生成。");
     }, 500);
   }
 
@@ -227,14 +228,14 @@ export default function AppPage() {
           ingredients: mergedIngredients,
           steps: formSteps,
         });
-        toast.success("Recipe updated successfully.");
+        toast.success("菜谱已更新。");
       } else {
         await addRecipe({
           title: formTitle,
           ingredients: mergedIngredients,
           steps: formSteps,
         });
-        toast.success("Recipe added successfully.");
+        toast.success("菜谱已添加。");
       }
       setModalOpen(false);
     } catch (err: any) {
@@ -329,12 +330,12 @@ export default function AppPage() {
 
       <FormModal
         open={modalOpen}
-        title={editing ? "Edit Recipe" : "Add Recipe"}
+        title={editing ? "编辑菜谱" : "添加菜谱"}
         onClose={() => setModalOpen(false)}
       >
         <form onSubmit={saveRecipe} className="space-y-4">
           <label className="block">
-            <span className="mb-1 block text-sm text-[#516053]">Title</span>
+            <span className="mb-1 block text-sm text-[#516053]">菜谱名称</span>
             <input
               className="w-full rounded-2xl border border-[#DDE7D7] bg-white p-3 outline-none"
               value={formTitle}
@@ -344,13 +345,13 @@ export default function AppPage() {
           </label>
           <label className="block">
             <span className="mb-1 block text-sm text-[#516053]">
-              Ingredients
+              食材
             </span>
             <div ref={chipsRef}>
               <InputChips
                 value={formIngredients}
                 onChange={setFormIngredients}
-                placeholder="Add ingredient and press Enter"
+                placeholder="输入食材后按回车键添加"
               />
             </div>
           </label>
@@ -360,10 +361,10 @@ export default function AppPage() {
             className="inline-flex items-center gap-2 rounded-full bg-[#E2F3E8] px-4 py-2 text-sm font-semibold text-[#1F7A4D]"
           >
             <Sparkles size={16} />
-            Generate Steps with AI
+            使用 AI 生成步骤
           </button>
           <label className="block">
-            <span className="mb-1 block text-sm text-[#516053]">Steps</span>
+            <span className="mb-1 block text-sm text-[#516053]">制作步骤</span>
             <textarea
               className="min-h-28 w-full rounded-2xl border border-[#DDE7D7] bg-white p-3 outline-none"
               value={formSteps}
@@ -377,7 +378,7 @@ export default function AppPage() {
               onClick={() => setModalOpen(false)}
               className="rounded-full bg-[#F1F5EC] px-5 py-2 font-medium text-[#516053]"
             >
-              Cancel
+              取消
             </button>
             <button
               type="submit"
@@ -385,7 +386,7 @@ export default function AppPage() {
               className="inline-flex items-center gap-2 rounded-full bg-[#1F7A4D] px-5 py-2 font-semibold text-white"
             >
               {actionLoadingId ? <Spinner size={16} /> : null}
-              {editing ? "Save" : "Add"}
+              {editing ? "保存" : "添加"}
             </button>
           </div>
         </form>
@@ -420,7 +421,7 @@ export default function AppPage() {
               className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#D8F5A2] px-6 py-3 font-semibold text-[#173326]"
             >
               <Sparkles size={18} />
-              Generate Today&apos;s Meal Plan
+              生成今日健康餐单
             </button>
           </div>
 
@@ -443,7 +444,7 @@ export default function AppPage() {
         </section>
 
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-          <MetricCard icon={Target} label="今日热量" value={`${mockNutritionReport.calories.value}`} unit="kcal" />
+          <MetricCard icon={Target} label="今日热量" value={`${mockNutritionReport.calories.value}`} unit="千卡" />
           <MetricCard icon={Beef} label="蛋白质" value={`${mockNutritionReport.protein.value}`} unit="g" />
           <MetricCard icon={BarChart3} label="碳水" value={`${mockNutritionReport.carbs.value}`} unit="g" />
           <MetricCard icon={Leaf} label="脂肪" value={`${mockNutritionReport.fat.value}`} unit="g" />
@@ -464,7 +465,7 @@ export default function AppPage() {
                 {meal.name}
               </h3>
               <div className="mt-4 flex items-center gap-4 text-sm text-[#6C7D70]">
-                <span>{meal.calories} kcal</span>
+                <span>{meal.calories} 千卡</span>
                 <span>{meal.time}</span>
               </div>
               <p className="mt-4 text-sm leading-6 text-[#516053]">
@@ -502,7 +503,7 @@ export default function AppPage() {
       <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
         <section className="rounded-[28px] border border-[#E2E8DA] bg-white p-6 shadow-sm">
           <SectionHeader
-            title="AI Plan"
+            title="AI 智能餐单"
             description="输入你的目标、偏好、预算和现有食材，生成适合本周执行的饮食方案。"
           />
           <div className="mt-6 space-y-6">
@@ -552,13 +553,13 @@ export default function AppPage() {
                 className="inline-flex items-center gap-2 rounded-full bg-[#1F7A4D] px-6 py-3 font-semibold text-white"
               >
                 {planLoading ? <Spinner size={16} /> : <Sparkles size={18} />}
-                Generate AI Meal Plan
+                生成 AI 健康餐单
               </button>
               <button
                 onClick={generateRecipeIdeas}
                 className="rounded-full bg-[#E2F3E8] px-6 py-3 font-semibold text-[#1F7A4D]"
               >
-                Fridge to Recipe
+                根据现有食材推荐
               </button>
             </div>
           </div>
@@ -604,19 +605,19 @@ export default function AppPage() {
               <ResultBlock title="今日推荐餐单" items={aiGenerated ? mockAiPlan.today : ["等待生成"]} />
               <ResultBlock title="一周饮食计划摘要" items={aiGenerated ? mockAiPlan.weeklySummary : ["等待生成"]} />
               <ResultBlock title="需要购买的食材" items={aiGenerated ? mockAiPlan.groceries : ["等待生成"]} />
-              <ResultBlock title="AI 推荐菜谱" items={recipeIdeas.length ? recipeIdeas : ["点击 Fridge to Recipe 查看建议"]} />
+              <ResultBlock title="AI 推荐菜谱" items={recipeIdeas.length ? recipeIdeas : ["点击“根据现有食材推荐”查看建议"]} />
             </div>
 
             <div className="mt-6 flex flex-wrap gap-3">
-              <button onClick={() => toast.success("Plan saved.")} className="rounded-full bg-[#1F7A4D] px-5 py-2 font-semibold text-white">
-                Save Plan
+              <button onClick={() => toast.success("餐单已保存。")} className="rounded-full bg-[#1F7A4D] px-5 py-2 font-semibold text-white">
+                保存餐单
               </button>
-              <button onClick={() => addToShoppingList("AI Plan")} className="rounded-full bg-[#E2F3E8] px-5 py-2 font-semibold text-[#1F7A4D]">
-                Add to Shopping List
+              <button onClick={() => addToShoppingList("AI 餐单")} className="rounded-full bg-[#E2F3E8] px-5 py-2 font-semibold text-[#1F7A4D]">
+                加入购物清单
               </button>
               <button onClick={runAiPlan} className="inline-flex items-center gap-2 rounded-full bg-[#F1F5EC] px-5 py-2 font-semibold text-[#516053]">
                 <RefreshCcw size={16} />
-                Regenerate
+                重新生成
               </button>
             </div>
           </div>
@@ -629,10 +630,10 @@ export default function AppPage() {
     return (
       <div className="space-y-6">
         <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
-          <SectionHeader title="Recipes" description="浏览适合不同目标的健康菜谱，也可以继续管理你自己的菜谱。" />
+          <SectionHeader title="健康菜谱" description="浏览适合不同目标的健康菜谱，也可以继续管理你自己的菜谱。" />
           <button onClick={openCreate} className="inline-flex items-center gap-2 rounded-full bg-[#1F7A4D] px-5 py-3 font-semibold text-white">
             <Plus size={18} />
-            Add Recipe
+            添加菜谱
           </button>
         </div>
 
@@ -699,7 +700,7 @@ export default function AppPage() {
                     </p>
                     <div className="mt-4 flex gap-2">
                       <button onClick={() => openEdit(recipe)} className="rounded-full bg-[#E2F3E8] px-4 py-2 text-sm font-medium text-[#1F7A4D]">
-                        Edit
+                        编辑
                       </button>
                       <button
                         disabled={actionLoadingId === (recipe._id || recipe.id)}
@@ -708,23 +709,23 @@ export default function AppPage() {
                           try {
                             setRefetchingAfterDelete(true);
                             await deleteRecipe(recipe._id || recipe.id);
-                            toast.success("Recipe deleted successfully.");
+                            toast.success("菜谱已删除。");
                           } catch (err: any) {
-                            toast.error(err?.message || "Failed to delete");
+                            toast.error(err?.message || "删除失败");
                           } finally {
                             setActionLoadingId(null);
                           }
                         }}
                         className="rounded-full bg-[#FFF0EE] px-4 py-2 text-sm font-medium text-rose-600"
                       >
-                        Delete
+                        删除
                       </button>
                     </div>
                   </div>
                 ))}
             {!recipesLoading && recipes.length === 0 ? (
               <div className="rounded-3xl border border-dashed border-[#CAD8C5] p-6 text-[#516053]">
-                暂无自建菜谱。可以点击 Add Recipe 添加你的第一道健康菜。
+                暂无自建菜谱。可以点击“添加菜谱”创建你的第一道健康菜。
               </div>
             ) : null}
           </div>
@@ -741,26 +742,34 @@ export default function AppPage() {
           返回菜谱
         </button>
         <section className="overflow-hidden rounded-[32px] border border-[#E2E8DA] bg-white shadow-sm">
-          <div className={`flex min-h-[280px] items-end bg-gradient-to-br ${selectedRecipe.gradient} p-8`}>
-            <div className="max-w-3xl">
+          <div className="relative flex min-h-[360px] items-end overflow-hidden p-8">
+            <Image
+              src={selectedRecipe.image}
+              alt={selectedRecipe.name}
+              fill
+              sizes="(max-width: 1024px) 100vw, 1280px"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+            <div className="relative max-w-3xl text-white">
               <div className="flex flex-wrap gap-2">
                 {selectedRecipe.tags.map((tag) => (
                   <Tag key={tag}>{tag}</Tag>
                 ))}
               </div>
-              <h1 className="mt-5 text-4xl font-semibold text-[#173326]">
+              <h1 className="mt-5 text-4xl font-semibold text-white">
                 {selectedRecipe.name}
               </h1>
-              <p className="mt-3 max-w-2xl text-[#516053]">{selectedRecipe.reason}</p>
+              <p className="mt-3 max-w-2xl text-white/90">{selectedRecipe.reason}</p>
             </div>
           </div>
           <div className="grid gap-8 p-8 lg:grid-cols-[0.8fr_1.2fr]">
             <aside className="space-y-5">
               <div className="grid grid-cols-2 gap-3">
-                <NutritionMini label="热量" value={`${selectedRecipe.calories} kcal`} />
-                <NutritionMini label="蛋白质" value={`${selectedRecipe.protein}g`} />
-                <NutritionMini label="碳水" value={`${selectedRecipe.carbs}g`} />
-                <NutritionMini label="脂肪" value={`${selectedRecipe.fat}g`} />
+                <NutritionMini label="热量" value={`${selectedRecipe.calories} 千卡`} />
+                <NutritionMini label="蛋白质" value={`${selectedRecipe.protein} 克`} />
+                <NutritionMini label="碳水" value={`${selectedRecipe.carbs} 克`} />
+                <NutritionMini label="脂肪" value={`${selectedRecipe.fat} 克`} />
               </div>
               <div className="rounded-3xl bg-[#F5F7F1] p-5">
                 <h2 className="font-semibold text-[#173326]">食材清单</h2>
@@ -772,7 +781,7 @@ export default function AppPage() {
                         <p className="text-sm text-[#6C7D70]">{item.amount}</p>
                       </div>
                       <span className={`rounded-full px-3 py-1 text-xs font-semibold ${item.inPantry ? "bg-[#E2F3E8] text-[#1F7A4D]" : "bg-[#FFF0EE] text-rose-600"}`}>
-                        {item.inPantry ? "Pantry 已有" : "需要购买"}
+                        {item.inPantry ? "食材库已有" : "需要购买"}
                       </span>
                     </div>
                   ))}
@@ -824,7 +833,7 @@ export default function AppPage() {
 
     return (
       <div className="space-y-6">
-        <SectionHeader title="Pantry" description="用卡片管理食材库存，优先发现即将过期和库存不足的食材。" />
+        <SectionHeader title="我的食材" description="用卡片管理食材库存，优先发现即将过期和库存不足的食材。" />
         <section className="grid gap-4 md:grid-cols-3">
           <MetricCard icon={Package} label="总食材数量" value={`${mockPantryItems.length}`} unit="种" />
           <MetricCard icon={Clock} label="即将过期" value={`${expiring}`} unit="种" />
@@ -884,14 +893,14 @@ export default function AppPage() {
 
     return (
       <div className="space-y-6">
-        <SectionHeader title="Shopping" description="自动生成的本周购物清单，和 AI Plan 保持同步。" />
+        <SectionHeader title="购物清单" description="自动生成本周购物清单，并与 AI 智能餐单保持同步。" />
         <section className="grid gap-4 md:grid-cols-3">
           <MetricCard icon={WalletCards} label="预计花费" value="148" unit="元" />
           <MetricCard icon={ShoppingCart} label="食材数量" value={`${totalItems}`} unit="项" />
           <MetricCard icon={CheckCircle2} label="已购买" value={`${checkedItems}`} unit="项" />
         </section>
         <div className="flex flex-wrap gap-3">
-          <button onClick={() => toast.success("已根据 AI Plan 生成购物清单。")} className="rounded-full bg-[#1F7A4D] px-5 py-3 font-semibold text-white">
+          <button onClick={() => toast.success("已根据 AI 智能餐单生成购物清单。")} className="rounded-full bg-[#1F7A4D] px-5 py-3 font-semibold text-white">
             一键生成购物清单
           </button>
           <button onClick={() => setShoppingChecked({})} className="rounded-full bg-[#F1F5EC] px-5 py-3 font-semibold text-[#516053]">
@@ -934,7 +943,7 @@ export default function AppPage() {
   function renderProfile() {
     return (
       <div className="space-y-6">
-        <SectionHeader title="Profile" description="饮食偏好、目标和营养报告集中展示。" />
+        <SectionHeader title="个人中心" description="集中展示饮食偏好、健康目标和营养报告。" />
         <section className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
           <div className="rounded-[28px] border border-[#E2E8DA] bg-white p-6 shadow-sm">
             <div className="flex items-center gap-4">
@@ -1079,18 +1088,26 @@ function RecipeGridCard({
   return (
     <button
       onClick={() => onOpen(recipe)}
-      className="overflow-hidden rounded-[28px] border border-[#E2E8DA] bg-white text-left shadow-sm"
+      className="group overflow-hidden rounded-[28px] border border-[#E2E8DA] bg-white text-left shadow-sm"
     >
-      <div className={`flex h-44 items-end bg-gradient-to-br ${recipe.gradient} p-5`}>
-        <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-[#1F7A4D]">
+      <div className="relative flex h-48 items-end overflow-hidden p-5">
+        <Image
+          src={recipe.image}
+          alt={recipe.name}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+          className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
+        <span className="relative rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-[#1F7A4D]">
           {recipe.imageLabel}
         </span>
       </div>
       <div className="p-5">
         <h3 className="text-lg font-semibold text-[#173326]">{recipe.name}</h3>
         <div className="mt-3 grid grid-cols-3 gap-2 text-sm text-[#6C7D70]">
-          <span>{recipe.calories} kcal</span>
-          <span>{recipe.protein}g 蛋白</span>
+          <span>{recipe.calories} 千卡</span>
+          <span>{recipe.protein} 克蛋白质</span>
           <span>{recipe.time}</span>
         </div>
         <div className="mt-4 flex flex-wrap gap-2">

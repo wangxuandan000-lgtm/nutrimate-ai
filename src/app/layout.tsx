@@ -17,7 +17,7 @@ export const inter = Inter({
 
 export const metadata = {
   title: "NutriMate AI",
-  description: "Smart nutrition, pantry, and meal planning assistant",
+  description: "智能饮食、食材库存与健康餐单助手",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

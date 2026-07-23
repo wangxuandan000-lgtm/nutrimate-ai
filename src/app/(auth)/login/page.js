@@ -103,7 +103,7 @@ export default function LoginPage() {
             <div className="mt-6 grid grid-cols-3 gap-3 text-sm">
               <div>
                 <p className="text-[#B9DCC4]">热量</p>
-                <p className="mt-1 font-semibold">1680 kcal</p>
+                <p className="mt-1 font-semibold">1680 千卡</p>
               </div>
               <div>
                 <p className="text-[#B9DCC4]">蛋白质</p>

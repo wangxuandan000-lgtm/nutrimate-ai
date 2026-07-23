@@ -1,17 +1,24 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 export async function POST(request) {
   try {
+    if (!process.env.OPENAI_API_KEY) {
+      return NextResponse.json(
+        { error: "当前使用模拟数据，尚未配置真实 AI 服务" },
+        { status: 503 }
+      );
+    }
+
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+
     const { ingredients } = await request.json();
 
     if (!ingredients || !Array.isArray(ingredients)) {
       return NextResponse.json(
-        { error: "ingredients[] is required" },
+        { error: "请提供食材列表" },
         { status: 400 }
       );
     }
@@ -38,7 +45,7 @@ export async function POST(request) {
   } catch (error) {
     console.error("AI error:", error);
     return NextResponse.json(
-      { error: "Failed to generate suggestions" },
+      { error: "生成菜谱建议失败，请稍后重试" },
       { status: 500 }
     );
   }
